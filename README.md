@@ -2,10 +2,10 @@
 
 ## create access and secret token
 run command "aws configure" and provide below details
-AWS Access Key ID [None]: accesskey
-AWS Secret Access Key [None]: secretkey
-Default region name [None]: us-west-2
-Default output format [None]:
+1. AWS Access Key ID [None]: accesskey
+2. AWS Secret Access Key [None]: secretkey
+3. Default region name [None]: us-west-2
+4. Default output format [None]:
 
 ## Steps to create Virtual Environment
 1. python3 -m venv <path>
