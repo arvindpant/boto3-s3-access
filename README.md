@@ -12,3 +12,8 @@ run command "aws configure" and provide below details
 2.	source venv/bin/activate
 3.	python -m pip install <package-name>
 4.	deactivate
+
+## Steps to run application on ubuntu
+1. Run init.sh to install required packages
+2. Provide your bucket name in configuration.toml file
+3. Run run.sh -p to start the application
