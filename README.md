@@ -1,7 +1,7 @@
 # Application to Access S3 with boto3
 
 ## create access and secret token
-aws configure
+run command "aws configure" and provide below details
 AWS Access Key ID [None]: accesskey
 AWS Secret Access Key [None]: secretkey
 Default region name [None]: us-west-2
