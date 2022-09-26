@@ -8,6 +8,8 @@ import toml
 import os
 import boto3
 import time
+from dotenv import load_dotenv
+import numpy as np
 
 columns = ['company_name', 'location', 'job_name', 'job_type', 'publication_date']
 today = time.strftime("%Y-%m-%d")
@@ -15,16 +17,16 @@ today = time.strftime("%Y-%m-%d")
 
 def read_config():
     app_config = toml.load('configuration.toml')
-    return app_config['api']['url']
+    return app_config
 
 
 # function to read api data and convert into json
-def read_api(url):
-    response = requests.get(url)
+def read_api(url_config):
+    response = requests.get(url_config['api']['url'])
     if response.status_code == 200:
         return response.json()
     else:
-        raise Exception("URL is unreachable: {}: STATUS CODE-{}".format(url, response.status_code))
+        raise Exception("URL is unreachable: {}: STATUS CODE-{}".format(url_config['api']['url'], response.status_code))
 
 
 # function to process json data according to business requirements
@@ -78,22 +80,26 @@ Default output format [None]:
 
 
 def aws_session():
+    load_dotenv()
+    access_key = os.getenv('ACCESS_KEY')
+    secret_key = os.getenv('SECRET_KEY')
     session = boto3.Session(profile_name='default')
     # credentials = session.get_credentials()
     # s3 = session.resource("s3")
     # print("AWS_ACCESS_KEY_ID = {}".format(credentials.access_key))
     # print("AWS_SECRET_ACCESS_KEY = {}".format(credentials.secret_key))
     # print("AWS_SESSION_TOKEN = {}".format(credentials.token))
-    return session
+    return access_key+","+secret_key
 
 
 # function to write data into S3 bucket
 def save_data_to_s3(file_path, bucket_config):
-    session = aws_session()
-    s3_client = boto3.client('s3')
+    access_key,secret_key = aws_session().split(",")
 
+    s3_client = boto3.client('s3', aws_access_key_id=access_key, aws_secret_access_key=secret_key)
+    print(bucket_config['s3']['bucket'])
     try:
-        s3_client.upload_file(os.path.basename(file_path), bucket_config['s3']['bucket'], today)
+        s3_client.upload_file(os.path.abspath(file_path), bucket_config['s3']['bucket'], f'{today}.csv')
     except Exception as e:
         return False
     return True
